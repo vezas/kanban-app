@@ -1,5 +1,15 @@
 import { FC, useState } from 'react';
-import { Typography, Paper, Stack, Box, Button, Dialog } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  Stack,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
 import { LoginForm, RegisterForm } from 'lib/components/Form';
 
 export const Home: FC = () => {
@@ -35,8 +45,8 @@ export const Home: FC = () => {
             <Stack spacing={2}>
               <LoginForm />
               <Typography variant='body2'>
-                Don't have account yet?
-                <Button size='small' onClick={() => setOpen(true)}>
+                Don't have account yet?{' '}
+                <Button sx={{ paddingInline: 0 }} size='small' onClick={() => setOpen(true)}>
                   Create account
                 </Button>
               </Typography>
@@ -45,9 +55,15 @@ export const Home: FC = () => {
         </Paper>
       </Stack>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <Box p={3}>
-          <RegisterForm />
-        </Box>
+        <DialogContent>
+          <DialogTitle>Create new account</DialogTitle>
+          <RegisterForm closeDialog={setOpen} />
+          <DialogActions>
+            <Button onClick={() => setOpen(false)} size='small'>
+              Close
+            </Button>
+          </DialogActions>
+        </DialogContent>
       </Dialog>
     </>
   );
