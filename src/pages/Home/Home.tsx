@@ -57,7 +57,7 @@ export const Home: FC = () => {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
           <DialogTitle>Create new account</DialogTitle>
-          <RegisterForm closeDialog={setOpen} />
+          <RegisterForm />
           <DialogActions>
             <Button onClick={() => setOpen(false)} size='small'>
               Close

@@ -29,7 +29,6 @@ export const useLoginUser = () => {
   const navigate = useNavigate();
   const { mutate, isLoading, isError, error } = useMutation(loginInstance, {
     onSuccess: (data) => {
-      console.log(data);
       navigate(`${paths.DASHBOARD}/${data.data.localId}`);
     }
   });

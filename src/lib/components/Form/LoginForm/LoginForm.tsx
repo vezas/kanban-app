@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { DevTool } from '@hookform/devtools';
-import { useLoginUser } from 'lib/hooks/useLoginUser';
+import { useLoginUser } from 'lib/hooks';
 
 export const LoginForm: FC = () => {
   const { register, handleSubmit, control, submitForm, isLoading, errors, isError } =
@@ -15,6 +15,7 @@ export const LoginForm: FC = () => {
           <TextField
             label='Email'
             size='small'
+            type='email'
             {...register('email')}
             error={!!errors.email || isError}
             helperText={errors.email?.message}
@@ -22,6 +23,7 @@ export const LoginForm: FC = () => {
           <TextField
             label='Password'
             size='small'
+            type='password'
             {...register('password')}
             error={!!errors.password || isError}
             helperText={errors.password?.message}

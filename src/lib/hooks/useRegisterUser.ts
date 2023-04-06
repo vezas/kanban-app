@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { authInstance } from 'lib/services';
+import { authInstance, dataBaseInstance } from 'lib/services';
 
 interface Inputs {
   email: string;
@@ -17,7 +17,7 @@ const registerDataSchema = yup.object().shape({
   confirmPassword: yup.string().oneOf([yup.ref('password')], 'passwords must much')
 });
 
-const registerInstance = (data: { email: string; password: string }) =>
+const registerInstanceFn = (data: { email: string; password: string }) =>
   authInstance.post(`:signUp?key=${import.meta.env.VITE_REGISTER_API_KEY}`, {
     method: 'POST',
     email: data.email,
@@ -26,9 +26,22 @@ const registerInstance = (data: { email: string; password: string }) =>
     returnSecureToken: true
   });
 
-export const useRegisterUser = (closeDialog: Dispatch<SetStateAction<boolean>>) => {
-  const { mutate, isError, error, isLoading } = useMutation(registerInstance, {
-    onSuccess: () => closeDialog(false)
+const dataBaseInstanceFn = (id: string) =>
+  dataBaseInstance.post(`${id}.json`, JSON.stringify({ id }));
+
+export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean>>) => {
+  const { mutate: dataBaseMutate } = useMutation(dataBaseInstanceFn);
+  const {
+    mutate: registerMutate,
+    isError,
+    error,
+    isLoading
+  } = useMutation(registerInstanceFn, {
+    onSuccess: (data) => {
+      const id = data.data.localId;
+      setIsRegistered(true);
+      dataBaseMutate(id);
+    }
   });
 
   const {
@@ -40,7 +53,7 @@ export const useRegisterUser = (closeDialog: Dispatch<SetStateAction<boolean>>) 
   } = useForm<Inputs>({
     resolver: yupResolver(registerDataSchema)
   });
-  const submitForm: SubmitHandler<Inputs> = (data: Inputs) => mutate(data);
+  const submitForm: SubmitHandler<Inputs> = (data: Inputs) => registerMutate(data);
 
   return { register, handleSubmit, control, submitForm, errors, isError, error, isLoading };
 };
