@@ -1,16 +1,47 @@
 import { FC } from 'react';
-import { Stack, TextField, Button } from '@mui/material';
+import { Stack, TextField, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { DevTool } from '@hookform/devtools';
+import { useLoginUser } from 'lib/hooks/useLoginUser';
 
 export const LoginForm: FC = () => {
+  const { register, handleSubmit, control, submitForm, isLoading, errors, isError } =
+    useLoginUser();
+
   return (
-    <form>
-      <Stack spacing={2}>
-        <TextField label='Username' size='small' />
-        <TextField label='Password' size='small' />
-        <Button type='submit' variant='contained'>
-          Log in
-        </Button>
-      </Stack>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(submitForm)}>
+        <Stack spacing={2}>
+          <TextField
+            label='Email'
+            size='small'
+            {...register('email')}
+            error={!!errors.email || isError}
+            helperText={errors.email?.message}
+          />
+          <TextField
+            label='Password'
+            size='small'
+            {...register('password')}
+            error={!!errors.password || isError}
+            helperText={errors.password?.message}
+          />
+          <LoadingButton
+            type='submit'
+            variant='contained'
+            loading={isLoading}
+            color={isError ? 'error' : 'primary'}
+          >
+            Log in
+          </LoadingButton>
+        </Stack>
+      </form>
+      <DevTool control={control} />
+      {isError && (
+        <Typography textAlign='center' color='error'>
+          Invalid data
+        </Typography>
+      )}
+    </>
   );
 };
