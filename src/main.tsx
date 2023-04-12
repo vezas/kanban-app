@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { CssBaseline } from '@mui/material';
-import { Dashboard, Home } from 'pages';
+import { Dashboard, Home, ProtectedRoute } from 'pages';
 import { paths } from 'constants';
 import 'lib/styles/main.css';
 
@@ -14,8 +14,14 @@ const router = createBrowserRouter([
     element: <Home />
   },
   {
-    path: `${paths.DASHBOARD}/:dashboardID`,
-    element: <Dashboard />
+    path: `${paths.DASHBOARD}`,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: `${paths.DASHBOARD}`,
+        element: <Dashboard />
+      }
+    ]
   }
 ]);
 

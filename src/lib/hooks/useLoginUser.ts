@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,9 +27,13 @@ const loginInstance = (data: { email: string; password: string }) =>
 
 export const useLoginUser = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.path || paths.DASHBOARD;
+
   const { mutate, isLoading, isError, error } = useMutation(loginInstance, {
     onSuccess: (data) => {
-      navigate(`${paths.DASHBOARD}/${data.data.localId}`);
+      localStorage.setItem('accessToken', data.data.idToken);
+      navigate(redirectPath, { replace: true });
     }
   });
 
