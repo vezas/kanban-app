@@ -1,2 +1,1 @@
-export { authInstance } from './auth-instance.service';
-export { dataBaseInstance } from './data-base-instance.service';
+export { auth, db } from './firebase.service';

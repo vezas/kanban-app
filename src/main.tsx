@@ -5,7 +5,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { CssBaseline } from '@mui/material';
 import { Dashboard, Home, ProtectedRoute } from 'pages';
-import { paths } from 'constants';
+import { paths } from 'lib/constants';
 import 'lib/styles/main.css';
 
 const router = createBrowserRouter([

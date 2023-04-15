@@ -3,7 +3,9 @@ import { useMutation } from 'react-query';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { authInstance, dataBaseInstance } from 'lib/services';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { auth, db } from 'lib/services';
 
 interface Inputs {
   email: string;
@@ -18,19 +20,14 @@ const registerDataSchema = yup.object().shape({
 });
 
 const registerInstanceFn = (data: { email: string; password: string }) =>
-  authInstance.post(`:signUp?key=${import.meta.env.VITE_REGISTER_API_KEY}`, {
-    method: 'POST',
-    email: data.email,
-    password: data.password,
-    headers: { 'Content-Type': 'application/json' },
-    returnSecureToken: true
-  });
+  createUserWithEmailAndPassword(auth, data.email, data.password);
 
-const dataBaseInstanceFn = (id: string) =>
-  dataBaseInstance.post(`${id}.json`, JSON.stringify({ id }));
+const createUserDatabase = (id: string) => {
+  const usersRef = collection(db, 'users');
+  setDoc(doc(usersRef, id), {});
+};
 
 export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean>>) => {
-  const { mutate: dataBaseMutate } = useMutation(dataBaseInstanceFn);
   const {
     mutate: registerMutate,
     isError,
@@ -38,9 +35,8 @@ export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean
     isLoading
   } = useMutation(registerInstanceFn, {
     onSuccess: (data) => {
-      const id = data.data.localId;
       setIsRegistered(true);
-      dataBaseMutate(id);
+      createUserDatabase(data.user.uid);
     }
   });
 

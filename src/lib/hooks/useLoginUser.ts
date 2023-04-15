@@ -3,8 +3,9 @@ import { useMutation } from 'react-query';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { authInstance } from 'lib/services';
-import { paths } from 'constants';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from 'lib/services';
+import { paths } from 'lib/constants';
 
 interface Inputs {
   email: string;
@@ -17,13 +18,7 @@ const loginDataSchema = yup.object().shape({
 });
 
 const loginInstance = (data: { email: string; password: string }) =>
-  authInstance.post(`:signInWithPassword?key=${import.meta.env.VITE_REGISTER_API_KEY}`, {
-    method: 'POST',
-    email: data.email,
-    password: data.password,
-    headers: { 'Content-Type': 'application/json' },
-    returnSecureToken: true
-  });
+  signInWithEmailAndPassword(auth, data.email, data.password);
 
 export const useLoginUser = () => {
   const navigate = useNavigate();
@@ -32,7 +27,7 @@ export const useLoginUser = () => {
 
   const { mutate, isLoading, isError, error } = useMutation(loginInstance, {
     onSuccess: (data) => {
-      localStorage.setItem('accessToken', data.data.idToken);
+      localStorage.setItem('accessToken', data.user.uid);
       navigate(redirectPath, { replace: true });
     }
   });
