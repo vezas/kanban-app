@@ -1,6 +1,5 @@
-import { FC, useState, MouseEvent } from 'react';
+import { FC, useState, MouseEvent, Dispatch, SetStateAction } from 'react';
 import {
-  AppBar,
   Stack,
   Toolbar,
   Button,
@@ -10,11 +9,19 @@ import {
   MenuItem,
   Avatar
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/menu';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
+import { AppBar } from './Header.styled';
 
-export const Header: FC = () => {
+interface HeaderProps {
+  isSidebarOpen: boolean;
+
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export const Header: FC<HeaderProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
   const [anchorSettingsMenu, setAnchorSettingsMenu] = useState<HTMLButtonElement | null>(null);
   const settingsMenuOpen = Boolean(anchorSettingsMenu);
   const handleOpenSettingsMenu = (event: MouseEvent<HTMLButtonElement>) =>
@@ -29,10 +36,28 @@ export const Header: FC = () => {
 
   return (
     <>
-      <AppBar position='static' color='primary'>
+      <AppBar position='fixed' color='primary' open={isSidebarOpen}>
         <Toolbar>
-          <Stack direction='row' alignItems='center' spacing={2}>
-            <Typography variant='h1' fontSize='2rem' display={{ xs: 'none', sm: 'block' }}>
+          <IconButton
+            size='small'
+            color='inherit'
+            aria-label='open sidebar'
+            sx={{
+              mr: { xs: 0, sm: 3 },
+              ...(isSidebarOpen && { display: 'none' })
+            }}
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Stack
+            direction='row'
+            alignItems='center'
+            justifyContent='center'
+            spacing={{ xs: 1, sm: 2 }}
+            mr={2}
+          >
+            <Typography noWrap variant='h1' fontSize='2rem' display={{ xs: 'none', sm: 'block' }}>
               KanbanApp
             </Typography>
             <ViewKanbanIcon sx={{ fontSize: '2rem' }} />
@@ -43,7 +68,10 @@ export const Header: FC = () => {
               variant='contained'
               color='secondary'
               size='medium'
-              sx={{ textTransform: 'none', display: { xs: 'none', sm: 'flex' } }}
+              sx={{
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'flex', whiteSpace: 'nowrap' }
+              }}
             >
               Add new Task
             </Button>

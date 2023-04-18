@@ -24,7 +24,19 @@ const registerInstanceFn = (data: { email: string; password: string }) =>
 
 const createUserDatabase = (id: string) => {
   const usersRef = collection(db, 'users');
-  setDoc(doc(usersRef, id), {});
+  setDoc(doc(usersRef, id), {
+    board: {
+      name: 'nazwa tablicy,',
+      autor: 'radek',
+      kolumny: {
+        kolumna1: {
+          nazwa: 'todo',
+          taski: { task1: { nazwa: 'zrob to', podzadanie: { pozdadanie1: '111' } }, task2: 'zrob2' }
+        },
+        kolumna2: 'zrobione'
+      }
+    }
+  });
 };
 
 export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean>>) => {
@@ -44,7 +56,6 @@ export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean
     register,
     handleSubmit,
     control,
-
     formState: { errors }
   } = useForm<Inputs>({
     resolver: yupResolver(registerDataSchema)
