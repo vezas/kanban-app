@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { useMutation } from 'react-query';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from 'lib/services';
 
 interface Inputs {
@@ -24,19 +24,7 @@ const registerInstanceFn = (data: { email: string; password: string }) =>
 
 const createUserDatabase = (id: string) => {
   const usersRef = collection(db, 'users');
-  setDoc(doc(usersRef, id), {
-    board: {
-      name: 'nazwa tablicy,',
-      autor: 'radek',
-      kolumny: {
-        kolumna1: {
-          nazwa: 'todo',
-          taski: { task1: { nazwa: 'zrob to', podzadanie: { pozdadanie1: '111' } }, task2: 'zrob2' }
-        },
-        kolumna2: 'zrobione'
-      }
-    }
-  });
+  setDoc(doc(usersRef, id), { userId: id });
 };
 
 export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean>>) => {
@@ -60,7 +48,9 @@ export const useRegisterUser = (setIsRegistered: Dispatch<SetStateAction<boolean
   } = useForm<Inputs>({
     resolver: yupResolver(registerDataSchema)
   });
-  const submitForm: SubmitHandler<Inputs> = (data: Inputs) => registerMutate(data);
 
-  return { register, handleSubmit, control, submitForm, errors, isError, error, isLoading };
+  const submitForm: SubmitHandler<Inputs> = (data: Inputs) => registerMutate(data);
+  const submitFormFn = handleSubmit(submitForm);
+
+  return { register, submitFormFn, control, errors, isError, error, isLoading };
 };

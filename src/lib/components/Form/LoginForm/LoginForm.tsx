@@ -1,7 +1,7 @@
 import { FC } from 'react';
+import { DevTool } from '@hookform/devtools';
 import { Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { DevTool } from '@hookform/devtools';
 import { useLoginUser } from 'lib/hooks';
 
 export const LoginForm: FC = () => {
@@ -27,6 +27,7 @@ export const LoginForm: FC = () => {
             {...register('password')}
             error={!!errors.password || isError}
             helperText={errors.password?.message}
+            autoComplete='off'
           />
           <LoadingButton
             type='submit'

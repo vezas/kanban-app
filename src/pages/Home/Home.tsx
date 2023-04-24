@@ -20,6 +20,7 @@ export const Home: FC = () => {
       <Stack
         minHeight='100vh'
         height='100%'
+        width='100%'
         p={2}
         justifyContent='space-evenly'
         alignItems='center'

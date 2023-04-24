@@ -16,7 +16,7 @@ const newBoardDataSchema = yup.object().shape({
 
 const addBoardFn = (data: Inputs) => {
   const userId = localStorage.getItem('accessToken');
-  const boardsRef = collection(db, 'users', `${userId}`, 'boards');
+  const boardsRef = collection(db, `users/${userId}/boards`);
   return addDoc(boardsRef, data);
 };
 

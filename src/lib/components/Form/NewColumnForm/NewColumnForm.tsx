@@ -1,24 +1,27 @@
 import { Dispatch, FC, SetStateAction } from 'react';
+import { useParams } from 'react-router-dom';
 import { Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { DevTool } from '@hookform/devtools';
-import { usePostBoard } from 'lib/hooks';
+import { usePostColumn } from 'lib/hooks';
 
-interface NewBoardFormProps {
+interface NewColumnFormProps {
   setIsFormOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const NewBoardForm: FC<NewBoardFormProps> = ({ setIsFormOpen }) => {
-  const { handleSubmit, submitForm, register, isError, errors, isLoading, control } =
-    usePostBoard(setIsFormOpen);
+export const NewColumnForm: FC<NewColumnFormProps> = ({ setIsFormOpen }) => {
+  const { boardId } = useParams();
+  const { register, handleSubmit, control, submitForm, isLoading, errors, isError } = usePostColumn(
+    boardId as string,
+    setIsFormOpen
+  );
 
   return (
     <>
-      <form onSubmit={handleSubmit(submitForm)} noValidate>
+      <form onSubmit={handleSubmit(submitForm)}>
         <Stack spacing={2}>
           <TextField
-            autoComplete='off'
-            label='Board name'
+            label='Column name'
             size='small'
             type='text'
             {...register('name')}

@@ -10,9 +10,7 @@ export const DashboardLayout: FC = () => {
     <>
       <Header isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
     </>
   );
 };

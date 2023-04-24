@@ -34,7 +34,12 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =
 
   return (
     <>
-      <Drawer variant='permanent' open={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
+      <Drawer
+        as='aside'
+        variant='permanent'
+        open={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      >
         <DrawerHeader>
           <IconButton size='small' onClick={() => setIsSidebarOpen(false)}>
             <ChevronLeftIcon />

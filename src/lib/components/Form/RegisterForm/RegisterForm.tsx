@@ -1,14 +1,13 @@
 import { FC, useState } from 'react';
+import { DevTool } from '@hookform/devtools';
 import { Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { DevTool } from '@hookform/devtools';
-import { useRegisterUser } from 'lib/hooks';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useRegisterUser } from 'lib/hooks';
 
 export const RegisterForm: FC = () => {
   const [isRegistered, setIsRegistered] = useState(false);
-
-  const { register, handleSubmit, control, submitForm, errors, isError, error, isLoading } =
+  const { register, submitFormFn, control, errors, isError, error, isLoading } =
     useRegisterUser(setIsRegistered);
 
   return (
@@ -24,7 +23,7 @@ export const RegisterForm: FC = () => {
         </>
       ) : (
         <>
-          <form onSubmit={handleSubmit(submitForm)} noValidate>
+          <form onSubmit={submitFormFn} noValidate>
             <Stack spacing={2}>
               <TextField
                 label='Email'
@@ -43,6 +42,7 @@ export const RegisterForm: FC = () => {
                 {...register('password')}
                 error={!!errors.password}
                 helperText={errors.password?.message}
+                autoComplete='off'
               />
               <TextField
                 label='Confirm password'
@@ -52,6 +52,7 @@ export const RegisterForm: FC = () => {
                 {...register('confirmPassword')}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword?.message}
+                autoComplete='off'
               />
               <LoadingButton loading={isLoading} type='submit' variant='contained'>
                 Register
